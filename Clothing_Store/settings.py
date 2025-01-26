@@ -9,12 +9,13 @@ SECRET_KEY = 'django-insecure-+eo1&hv(9#&ju&=r-i_&zy29*dft01u!18+%n(ma&976y!zzpi
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["127.0.0.1",".vercel.app"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'whitenoise.runserver_nostatic',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -50,6 +51,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     
 ]
 
@@ -71,7 +73,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'Clothing_Store.wsgi.application'
+WSGI_APPLICATION = 'Clothing_Store.wsgi.app'
 
 
 # Database
@@ -86,10 +88,19 @@ WSGI_APPLICATION = 'Clothing_Store.wsgi.application'
 
 #Postgres Database
 
-
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'postgres.daqlugycdtswuxuucvqq',
+        'PASSWORD': '8g3wsnr7iZ$W2Yv',
+        'HOST': 'aws-0-ap-southeast-1.pooler.supabase.com',
+        'PORT': '6543'
+    }
+}
 
 MEDIA_URL = '/media/'
-
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -127,9 +138,6 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 import environ
