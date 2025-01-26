@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouFashion</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+  <!-- Navbar -->
+  <nav class="bg-white shadow-lg">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="flex justify-between">
+        <div class="flex space-x-7">
+          <a href="#" class="flex items-center py-4 px-2">
+            <span class="font-semibold text-gray-500 text-2xl">YouFashion</span>
+          </a>
+        </div>
+        <div class="hidden md:flex items-center space-x-1">
+          <a href="#home" class="py-4 px-2 text-gray-500 font-semibold hover:text-purple-500 transition duration-300">Home</a>
+          <a href="#products" class="py-4 px-2 text-gray-500 font-semibold hover:text-purple-500 transition duration-300">Clothes</a>
+          <a href="#contact" class="py-4 px-2 text-gray-500 font-semibold hover:text-purple-500 transition duration-300">Contact Us</a>
+        </div>
+        <div class="hidden md:flex items-center space-x-3">
+          <div id="authenticated" class="hidden">
+            <a href="#profile" class="py-2 px-2 text-gray-500 font-semibold hover:text-purple-500 transition duration-300">Profile</a>
+            <button onclick="handleLogout()" class="py-2 px-2 text-gray-500 font-semibold hover:text-purple-500 transition duration-300">Logout</button>
+          </div>
+          <div id="unauthenticated" class="hidden">
+            <a href="#register" class="py-2 px-2 text-gray-500 font-semibold hover:text-purple-500 transition duration-300">Signup</a>
+            <a href="#login" class="py-2 px-2 text-gray-500 font-semibold hover:text-purple-500 transition duration-300">Login</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Home Section -->
+  <section id="home" class="bg-purple-500 py-20">
+    <div class="max-w-6xl mx-auto px-4 text-center">
+      <h1 class="text-5xl font-bold text-white mb-4">Welcome to YouFashion</h1>
+      <p class="text-xl text-white mb-8">Discover the latest trends in fashion and style.</p>
+      <a href="#products" class="bg-white text-purple-500 font-semibold py-3 px-6 rounded-full hover:bg-purple-100 transition duration-300">Explore Now</a>
+    </div>
+  </section>
+
+  <!-- Product Listing Section -->
+  <section id="products" class="max-w-6xl mx-auto px-4 py-12">
+    <h2 class="text-3xl font-bold text-gray-800 mb-8">Featured Products</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="product-list">
+      <!-- Product cards will be dynamically inserted here -->
+    </div>
+  </section>
+
+  <!-- Product Details Section -->
+  <section id="product-details" class="max-w-6xl mx-auto px-4 py-12 hidden">
+    <h2 class="text-3xl font-bold text-gray-800 mb-8">Product Details</h2>
+    <div id="product-details-content" class="bg-white shadow-lg rounded-lg p-6">
+      <!-- Product details will be dynamically inserted here -->
+    </div>
+  </section>
+
+  <!-- Wishlist Section -->
+  <section id="wishlist" class="max-w-6xl mx-auto px-4 py-12 hidden">
+    <h2 class="text-3xl font-bold text-gray-800 mb-8">Your Wishlist</h2>
+    <div id="wishlist-items" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Wishlist items will be dynamically inserted here -->
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-8">
+    <div class="max-w-6xl mx-auto px-4 text-center">
+      <p>&copy; 2023 YouFashion. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    // Simulate user authentication state
+    let isAuthenticated = false;
+
+    // Simulate product data
+    const products = [
+      {
+        id: 1,
+        name: "Red T-Shirt",
+        description: "A comfortable red T-shirt for everyday wear.",
+        price: 29.99,
+        popularity: 100,
+        size: "Medium",
+        color: "Red",
+        image: "https://via.placeholder.com/400x300",
+        reviews: [
+          { user: "John Doe", rating: 5, comment: "Great product!" },
+          { user: "Jane Doe", rating: 4, comment: "Good quality." },
+        ],
+      },
+      {
+        id: 2,
+        name: "Blue Jeans",
+        description: "Stylish blue jeans for a casual look.",
+        price: 59.99,
+        popularity: 120,
+        size: "Large",
+        color: "Blue",
+        image: "https://via.placeholder.com/400x300",
+        reviews: [
+          { user: "John Doe", rating: 4, comment: "Comfortable and stylish." },
+        ],
+      },
+      {
+        id: 3,
+        name: "Black Hoodie",
+        description: "A warm black hoodie for chilly days.",
+        price: 69.99,
+        popularity: 80,
+        size: "Large",
+        color: "Black",
+        image: "https://via.placeholder.com/400x300",
+        reviews: [],
+      },
+    ];
+
+    // Render product cards
+    const productList = document.getElementById("product-list");
+    products.forEach((product) => {
+      const productCard = `
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+          <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover">
+          <div class="p-6">
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">${product.name}</h3>
+            <p class="text-gray-600">${product.description}</p>
+            <p class="text-purple-500 font-semibold mt-4">$${product.price}</p>
+            <button onclick="showProductDetails(${product.id})" class="mt-4 bg-purple-500 text-white py-2 px-4 rounded-full hover:bg-purple-600 transition duration-300">View Details</button>
+            ${isAuthenticated ? `<button onclick="addToWishlist(${product.id})" class="mt-2 bg-gray-500 text-white py-2 px-4 rounded-full hover:bg-gray-600 transition duration-300">Add to Wishlist</button>` : ""}
+          </div>
+        </div>
+      `;
+      productList.innerHTML += productCard;
+    });
+
+    // Show product details
+    function showProductDetails(productId) {
+      const product = products.find((p) => p.id === productId);
+      const productDetailsContent = document.getElementById("product-details-content");
+      productDetailsContent.innerHTML = `
+        <h3 class="text-2xl font-semibold text-gray-800 mb-4">${product.name}</h3>
+        <img src="${product.image}" alt="${product.name}" class="w-full h-64 object-cover mb-4">
+        <p class="text-gray-600">${product.description}</p>
+        <p class="text-purple-500 font-semibold mt-4">$${product.price}</p>
+        <div class="mt-6">
+          <h4 class="text-xl font-semibold text-gray-800 mb-2">Reviews</h4>
+          ${product.reviews.length > 0 ? product.reviews.map((review) => `
+            <div class="mb-4">
+              <p class="text-gray-600">${review.user}: ${review.comment}</p>
+              <p class="text-yellow-500">Rating: ${review.rating}/5</p>
+            </div>
+          `).join("") : "<p>No reviews yet.</p>"}
+        </div>
+        ${isAuthenticated ? `
+          <div class="mt-6">
+            <h4 class="text-xl font-semibold text-gray-800 mb-2">Add a Review</h4>
+            <form onsubmit="submitReview(event, ${product.id})">
+              <textarea class="w-full p-2 border rounded-lg mb-2" placeholder="Your review" required></textarea>
+              <input type="number" class="w-full p-2 border rounded-lg mb-2" placeholder="Rating (1-5)" min="1" max="5" required>
+              <button type="submit" class="bg-purple-500 text-white py-2 px-4 rounded-full hover:bg-purple-600 transition duration-300">Submit Review</button>
+            </form>
+          </div>
+        ` : ""}
+      `;
+      document.getElementById("product-details").classList.remove("hidden");
+    }
+
+    // Add to wishlist
+    const wishlist = [];
+    function addToWishlist(productId) {
+      const product = products.find((p) => p.id === productId);
+      wishlist.push(product);
+      alert(`${product.name} added to wishlist!`);
+    }
+
+    // Submit review
+    function submitReview(event, productId) {
+      event.preventDefault();
+      const review = {
+        user: "Current User",
+        rating: event.target[1].value,
+        comment: event.target[0].value,
+      };
+      const product = products.find((p) => p.id === productId);
+      product.reviews.push(review);
+      alert("Review submitted!");
+      showProductDetails(productId);
+    }
+
+    // Handle logout
+    function handleLogout() {
+      isAuthenticated = false;
+      updateAuthState();
+      alert("Logged out successfully!");
+    }
+
+    // Update authentication state
+    function updateAuthState() {
+      const authenticatedDiv = document.getElementById("authenticated");
+      const unauthenticatedDiv = document.getElementById("unauthenticated");
+      if (isAuthenticated) {
+        authenticatedDiv.classList.remove("hidden");
+        unauthenticatedDiv.classList.add("hidden");
+      } else {
+        authenticatedDiv.classList.add("hidden");
+        unauthenticatedDiv.classList.remove("hidden");
+      }
+    }
+
+    // Initialize
+    updateAuthState();
+  </script>
+</body>
+</html>
