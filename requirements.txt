@@ -51,7 +51,7 @@ pipenv
 platformdirs
 polib
 prompt_toolkit
-psycopg2
+psycopg2-binary
 puremagic
 PyAutoGUI
 pycryptodome
