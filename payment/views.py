@@ -80,14 +80,14 @@ class PaymentViewSet(viewsets.ViewSet):
                 return Response({"error": "No active cart items found for the user."}, status=status.HTTP_404_NOT_FOUND)
             
             print(request.user)
-            # for item in cart_items:
-            #     print(item)
-            #     Order.objects.create(
-            #         user=request.user,
-            #         product=item.product,
-            #         quantity=item.quantity
-            #     )
-            #     item.delete()
+            for item in cart_items:
+                print(item)
+                Order.objects.create(
+                    user=request.user,
+                    product=item.product,
+                    quantity=item.quantity
+                )
+                item.delete()
             response = sslcz.createSession(post_body)
             if response.get('status') == 'SUCCESS' and 'GatewayPageURL' in response:
                 return Response({"url": response['GatewayPageURL']})
@@ -108,16 +108,16 @@ class PaymentViewSet(viewsets.ViewSet):
             #print(f"User: {request.user}, Authenticated: {request.user.is_authenticated}")
             #print(f"Auth headers: {request.headers}")
                 
-            cart_items = Cart.objects.filter(user=request.user)
-            print(request.user)
-            for item in cart_items:
-                print(item)
-                Order.objects.create(
-                    user=request.user,
-                    product=item.product,
-                    quantity=item.quantity
-                )
-                item.delete()
+            # cart_items = Cart.objects.filter(user=request.user)
+            # print(request.user)
+            # for item in cart_items:
+            #     print(item)
+            #     Order.objects.create(
+            #         user=request.user,
+            #         product=item.product,
+            #         quantity=item.quantity
+            #     )
+            #     item.delete()
 
             
             
