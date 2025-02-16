@@ -29,7 +29,7 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework',
     'rest_framework.authtoken',
-    
+    'payment',
     'corsheaders',
     "crispy_bootstrap5",
     
@@ -175,3 +175,7 @@ REST_FRAMEWORK = {
 SESSION_COOKIE_AGE = 86400  
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
+SUCCESS_URL = 'https://you-fashion-frontend.vercel.app/order.html'
+CANCEL_URL = 'https://you-fashion-frontend.vercel.app/cart.html'
+FAIL_URL = 'https://you-fashion-frontend.vercel.app/cart.html'
