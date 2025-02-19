@@ -85,6 +85,6 @@ class OrderListView(APIView):
 
     def get(self, request):
         # Fetch all orders for the authenticated user that are marked as ordered
-        orders = Order.objects.filter(user=request.user)
+        orders = Order.objects.filter(user=request.user).order_by('-ordered_at')
         serializer = OrderSerializer(orders, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

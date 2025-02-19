@@ -6,7 +6,7 @@ from orders.models import Order, Cart
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
-
+from django.shortcuts import render
 import uuid
 from rest_framework import status  # Make sure this import is at the top of your file
 from django.conf import settings
@@ -45,7 +45,7 @@ class PaymentViewSet(viewsets.ViewSet):
         
         
         # Define callback URLs
-        success_url = request.build_absolute_uri(f'/payment/success/')
+        success_url = request.build_absolute_uri(f'/payment/success/?user_id={user_id}&tran_id={tran_id}')
         # fail_url = request.build_absolute_uri(f'/payment/cancel/')
         fail_url = request.build_absolute_uri('/payment/fail/')
         cancel_url = request.build_absolute_uri('/payment/cancel/')
@@ -79,15 +79,7 @@ class PaymentViewSet(viewsets.ViewSet):
             if not cart_items.exists():
                 return Response({"error": "No active cart items found for the user."}, status=status.HTTP_404_NOT_FOUND)
             
-            print(request.user)
-            for item in cart_items:
-                print(item)
-                Order.objects.create(
-                    user=request.user,
-                    product=item.product,
-                    quantity=item.quantity
-                )
-                item.delete()
+            
             response = sslcz.createSession(post_body)
             if response.get('status') == 'SUCCESS' and 'GatewayPageURL' in response:
                 return Response({"url": response['GatewayPageURL']})
@@ -103,24 +95,18 @@ class PaymentViewSet(viewsets.ViewSet):
         
         try:
             
-            print("Hello")
-            
-            #print(f"User: {request.user}, Authenticated: {request.user.is_authenticated}")
-            #print(f"Auth headers: {request.headers}")
-                
-            # cart_items = Cart.objects.filter(user=request.user)
-            # print(request.user)
-            # for item in cart_items:
-            #     print(item)
-            #     Order.objects.create(
-            #         user=request.user,
-            #         product=item.product,
-            #         quantity=item.quantity
-            #     )
-            #     item.delete()
-
-            
-            
+            user_id = request.query_params.get('user_id')
+            user = User.objects.get(id=user_id)
+            print(f'user_id: {user_id} customer: {user}')
+            cart_items = Cart.objects.filter(user=user_id)
+            for item in cart_items:
+                print(item)
+                Order.objects.create(
+                    user=user,
+                    product=item.product,
+                    quantity=item.quantity
+                )
+                item.delete()
 
             return redirect(settings.SUCCESS_URL)
 
@@ -132,8 +118,8 @@ class PaymentViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=['post'])
     def cancel(self, request):
-        return redirect(settings.CANCEL_URL)
+        return render(request, 'payments/cancel.html')
     
     @action(detail=False, methods=['post'])
     def fail(self, request):
-        return redirect(settings.FAIL_URL)
+        return render(request, 'payments/cancel.html')
