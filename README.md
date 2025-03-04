@@ -57,19 +57,19 @@ Ensure you have the following installed:
    ```
 4. **Set Up Environment Variables:**
    - Create a `.env` file in the project root directory and add the following:
-     `env
-    SECRET_KEY=<your-generated-secret-key>
-    DB_NAME=<your-database-name>
-    DB_USER=<your-database-user>
-    DB_PASSWORD=<your-database-password>
-    DB_HOST=<your-database-host>
-    DB_PORT=<your-database-port>
-    EMAIL=<your-email>
-    PASSWORD=<your-email-app-password>
-    SUCCESS_URL=http://127.0.0.1:8000/order.html
-    CANCEL_URL=http://127.0.0.1:8000/cart.html
-    FAIL_URL=http://127.0.0.1:8000/cart.html
-     `
+     ```sh
+     SECRET_KEY=<your-generated-secret-key>
+     DB_NAME=<your-database-name>
+     DB_USER=<your-database-user>
+     DB_PASSWORD=<your-database-password>
+     DB_HOST=<your-database-host>
+     DB_PORT=<your-database-port>
+     EMAIL=<your-email>
+     PASSWORD=<your-email-app-password>
+     SUCCESS_URL=http://127.0.0.1:8000/order.html
+     CANCEL_URL=http://127.0.0.1:8000/cart.html
+     FAIL_URL=http://127.0.0.1:8000/cart.html
+     ```
    - To generate a new Django secret key, run:
      ```sh
      python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'
