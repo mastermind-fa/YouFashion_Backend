@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Product, Review, Wishlist
 from customers.models import Customer
 from customers.serializers import CustomerSerializer
+from django.contrib.auth.models import User
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
@@ -18,7 +19,7 @@ class ProductSerializer(serializers.ModelSerializer):
         
 
 class ReviewSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(queryset=Customer.objects.all())
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     
     # user = serializers.StringRelatedField()
     product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
@@ -30,16 +31,20 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializerGet(serializers.ModelSerializer):
-    user = CustomerSerializer()
-    
-    # user = serializers.StringRelatedField()
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
+    username = serializers.SerializerMethodField()  # Add this field to include the username
 
     class Meta:
         model = Review
-        fields = ['id', 'user', 'product', 'rating', 'comment', 'created_at']
+        fields = ['id', 'user', 'username', 'product', 'rating', 'comment', 'created_at']
         read_only_fields = ['created_at']
 
+    def get_username(self, obj):
+        # Fetch the username from the related User object
+        return obj.user.username
+    
+    
 
 class WishlistSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField()

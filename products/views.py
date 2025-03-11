@@ -67,17 +67,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django.shortcuts import get_object_or_404
 
 class ReviewListCreateAPIView(APIView):
-    # permission_classes = [IsAuthenticatedOrReadOnly]
-
-    # def get(self, request):
-    #     product_id = request.query_params.get('product', None)
-    #     if product_id:
-    #         reviews = Review.objects.filter(product_id=product_id)
-    #     else:
-    #         reviews = Review.objects.all()
-
-    #     serializer = ReviewSerializer(reviews, many=True)
-    #     return Response(serializer.data)
+    
 
     def post(self, request):
         serializer = ReviewSerializer(data=request.data)
@@ -96,7 +86,7 @@ class ReviewListGetAPIView(APIView):
         if product_id:
             reviews = Review.objects.filter(product_id=product_id)
         else:
-            reviews = Review.objects.all()
+            reviews = Review.objects.all().order_by('-created_at')
 
         serializer = ReviewSerializerGet(reviews, many=True)
         return Response(serializer.data)
