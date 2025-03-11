@@ -150,7 +150,49 @@ class UserProfileView(APIView):
                 return Response({"detail": "User profile not found."}, status=status.HTTP_404_NOT_FOUND)
         
         except User.DoesNotExist:
-            return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)        
+            return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND) 
+        
+        
+        
+    def put(self, request, user_id):
+        try:
+            # Fetch the user by user_id
+            user = User.objects.get(id=user_id)
+            
+            # Check if the user is a customer
+            if hasattr(user, 'customer'):
+                customer = user.customer
+                
+                # Update user fields
+                user.first_name = request.data.get('first_name', user.first_name)
+                user.last_name = request.data.get('last_name', user.last_name)
+                user.email = request.data.get('email', user.email)
+                user.save()
+                
+                # Update customer fields
+                customer.phone = request.data.get('phone', customer.phone)
+                customer.address = request.data.get('address', customer.address)
+                customer.save()
+                
+                # Return updated profile data
+                profile_data = {
+                    "id": customer.id,
+                    "username": user.username,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                    "email": user.email,
+                    "phone": customer.phone,
+                    "address": customer.address,
+                    "role": "customer",
+                }
+                return Response(profile_data, status=status.HTTP_200_OK)
+            
+            else:
+                return Response({"detail": "Only customers can update their profile."}, status=status.HTTP_403_FORBIDDEN)
+        
+        except User.DoesNotExist:
+            return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+           
         
 class CustomerViewset(viewsets.ModelViewSet):
     queryset = models.Customer.objects.all()
