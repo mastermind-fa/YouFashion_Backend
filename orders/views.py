@@ -4,6 +4,8 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from .models import Product, Order, Cart
 from .serializers import ProductSerializer, OrderSerializer, CartSerializer
+from django.shortcuts import get_object_or_404
+from datetime import datetime
 
 class CartView(APIView):
     # permission_classes = [IsAuthenticated]
@@ -88,3 +90,21 @@ class OrderListView(APIView):
         orders = Order.objects.filter(user=request.user).order_by('-ordered_at')
         serializer = OrderSerializer(orders, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class AllOrderAPIView(APIView):
+    # permission_classes = [IsAuthenticated, IsAdminUser]  # Only admins can access this view
+
+    def get(self, request):
+        # Retrieve all orders from all users
+        orders = Order.objects.all().order_by('-ordered_at')  # Sort by most recent
+        serializer = OrderSerializer(orders, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+# class OrderDetailAPIView(APIView):
+#     # permission_classes = [IsAuthenticated, IsAdminUser]  # Only admins can access this view
+
+#     def get(self, request, pk):
+#         # Retrieve a single order by ID
+#         order = get_object_or_404(Order, pk=pk)
+#         serializer = OrderSerializer(order)
+#         return Response(serializer.data, status=status.HTTP_200_OK)

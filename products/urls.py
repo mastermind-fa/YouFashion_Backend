@@ -9,6 +9,10 @@ router.register('list', views.ProductViewSet)  # For products
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('create/', views.ProductCreateAPIView.as_view(), name='product-create'),  # POST /products/create/
+    path('update/<int:pk>/', views.ProductUpdateAPIView.as_view(), name='product-update'),  # PATCH /products/update/<id>/
+    path('delete/<int:pk>/', views.ProductDeleteAPIView.as_view(), name='product-delete'),  # DELETE /products/delete/<id>/
+
     path('reviews/', views.ReviewListCreateAPIView.as_view(), name='reviews'),
     path('reviews/list/', views.ReviewListGetAPIView.as_view(), name='reviews-list'),
     path('wishlist/', views.WishlistListCreateAPIView.as_view(), name='wishlist-list-create'),
