@@ -3,7 +3,7 @@ from .models import Product, Review
 from .filters import ProductFilter
 from django_filters import rest_framework as filters
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import OrderingFilter
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -15,9 +15,10 @@ from rest_framework import permissions
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     filterset_class = ProductFilter
     ordering_fields = ['price', 'popularity']
+    search_fields = ['name']
   
 class ProductCreateAPIView(APIView):
     # permission_classes = [IsAdminUser]  # Only admins can create products
